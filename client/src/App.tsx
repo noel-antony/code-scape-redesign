@@ -16,6 +16,8 @@ import Careers from "@/pages/Careers";
 import Blog from "@/pages/Blog";
 import Contact from "@/pages/Contact";
 import NotFound from "@/pages/not-found";
+import { ParticleCursor } from "@/components/ParticleCursor";
+import { PageTransition } from "@/components/PageTransition";
 
 function ScrollToTop() {
   const [pathname] = useLocation();
@@ -26,21 +28,56 @@ function ScrollToTop() {
 }
 
 function Router() {
+  const [location] = useLocation();
   return (
     <div className="flex flex-col min-h-screen">
       <ScrollToTop />
       <Navbar />
       <main className="flex-grow">
-        <Switch>
-          <Route path="/" component={Home} />
-          <Route path="/services" component={Services} />
-          <Route path="/about" component={About} />
-          <Route path="/case-studies" component={CaseStudies} />
-          <Route path="/careers" component={Careers} />
-          <Route path="/blog" component={Blog} />
-          <Route path="/contact" component={Contact} />
-          <Route component={NotFound} />
-        </Switch>
+        <AnimatePresence mode="wait">
+          <Switch key={location} location={location}>
+            <Route path="/">
+              <PageTransition>
+                <Home />
+              </PageTransition>
+            </Route>
+            <Route path="/services">
+              <PageTransition>
+                <Services />
+              </PageTransition>
+            </Route>
+            <Route path="/about">
+              <PageTransition>
+                <About />
+              </PageTransition>
+            </Route>
+            <Route path="/case-studies">
+              <PageTransition>
+                <CaseStudies />
+              </PageTransition>
+            </Route>
+            <Route path="/careers">
+              <PageTransition>
+                <Careers />
+              </PageTransition>
+            </Route>
+            <Route path="/blog">
+              <PageTransition>
+                <Blog />
+              </PageTransition>
+            </Route>
+            <Route path="/contact">
+              <PageTransition>
+                <Contact />
+              </PageTransition>
+            </Route>
+            <Route>
+              <PageTransition>
+                <NotFound />
+              </PageTransition>
+            </Route>
+          </Switch>
+        </AnimatePresence>
       </main>
       <Footer />
     </div>
@@ -51,6 +88,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
+        <ParticleCursor />
         <Router />
         <Toaster />
       </TooltipProvider>
