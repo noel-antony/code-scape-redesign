@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
-import { Code, Globe, Server, Smartphone, Cpu, ShieldCheck } from "lucide-react";
+import { Code, Globe, Server, Smartphone, Cpu, ShieldCheck, ArrowRight } from "lucide-react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
+import { FocusHoverGroup } from "@/components/FocusHoverGroup";
 
 const services = [
   {
@@ -44,24 +45,24 @@ const services = [
 
 export default function Services() {
   return (
-    <div className="pt-24 pb-20">
+    <div className="pt-24 pb-0">
       <div className="container mx-auto px-4 md:px-6">
         <div className="text-center max-w-3xl mx-auto mb-20">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">Our Services</h1>
           <p className="text-xl text-muted-foreground">
-            We provide end-to-end engineering services to help you build, launch, and scale digital products.
+            End-to-end engineering to build, launch, and scale digital products.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <FocusHoverGroup className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {services.map((service, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.05 }}
+              transition={{ delay: i * 0.08, duration: 0.4, ease: [0.33, 1, 0.68, 1] }}
               viewport={{ once: true }}
-              className="group relative bg-card border border-white/5 rounded-2xl p-8 hover:border-primary/50 transition-all duration-300 hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-1"
+              className="group relative bg-card border border-white/5 rounded-2xl p-8 hover:border-primary/30 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5"
             >
               <div className="w-14 h-14 bg-white/5 rounded-xl flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300">
                 <service.icon className="w-7 h-7" />
@@ -85,8 +86,23 @@ export default function Services() {
               </Link>
             </motion.div>
           ))}
-        </div>
+        </FocusHoverGroup>
       </div>
+
+      {/* Process CTA */}
+      <section className="py-24 md:py-32 mt-16 md:mt-24 bg-surface-1">
+        <div className="container mx-auto px-4 md:px-6 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">How We Work</h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
+            Discovery, architecture, build, launch — each phase is structured for clarity and measurable outcomes.
+          </p>
+          <Link href="/contact">
+            <Button size="lg" className="h-12 px-8 bg-primary text-primary-foreground hover:bg-primary/90">
+              Start a Conversation <ArrowRight className="ml-2 w-4 h-4" />
+            </Button>
+          </Link>
+        </div>
+      </section>
     </div>
   );
 }

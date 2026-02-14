@@ -1,7 +1,7 @@
 import { Link } from "wouter";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { insertNewsletterSchema, type InsertNewsletterSubscriber } from "@shared/schema";
+import { insertNewsletterSchema, type InsertNewsletterSubscriber } from "@/hooks/use-contact";
 import { useNewsletter } from "@/hooks/use-contact";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,7 +40,7 @@ export default function Footer() {
                 <a
                   key={i}
                   href="#"
-                  className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-muted-foreground hover:bg-primary/20 hover:text-primary transition-colors"
+                  className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-muted-foreground hover:bg-primary/20 hover:text-primary transition-all duration-300 hover:-translate-y-0.5"
                 >
                   <Icon className="w-5 h-5" />
                 </a>
@@ -52,10 +52,16 @@ export default function Footer() {
           <div>
             <h4 className="text-lg font-semibold mb-6">Company</h4>
             <ul className="space-y-4">
-              {['About Us', 'Services', 'Case Studies', 'Careers', 'Contact'].map((item) => (
-                <li key={item}>
-                  <Link href={`/${item.toLowerCase().replace(' ', '-')}`} className="text-muted-foreground hover:text-primary transition-colors">
-                    {item}
+              {[
+                { label: 'About Us', href: '/about-us' },
+                { label: 'Services', href: '/services' },
+                { label: 'Projects', href: '/case-studies' },
+                { label: 'Careers', href: '/careers' },
+                { label: 'Contact', href: '/contact' },
+              ].map((item) => (
+                <li key={item.label}>
+                  <Link href={item.href} className="text-muted-foreground hover:text-primary transition-colors">
+                    {item.label}
                   </Link>
                 </li>
               ))}
@@ -94,13 +100,16 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Codescape Inc. All rights reserved.
-          </p>
-          <div className="flex gap-6 text-sm text-muted-foreground">
-            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+        <div className="pt-8 border-t border-white/5 flex flex-col items-center gap-4">
+          <p className="text-sm text-muted-foreground/50 italic">Built with long-term maintainability in mind.</p>
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 w-full">
+            <p className="text-sm text-muted-foreground">
+              © {new Date().getFullYear()} Codescape Inc. All rights reserved.
+            </p>
+            <div className="flex gap-6 text-sm text-muted-foreground">
+              <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
+              <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+            </div>
           </div>
         </div>
       </div>

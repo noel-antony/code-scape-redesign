@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { insertContactSchema, type InsertContactMessage } from "@shared/schema";
+import { insertContactSchema, type InsertContactMessage } from "@/hooks/use-contact";
 import { useContact } from "@/hooks/use-contact";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,14 +29,15 @@ export default function Contact() {
   }
 
   return (
-    <div className="pt-24 pb-20 min-h-screen">
+    <div className="pt-24 pb-24 md:pb-32 min-h-screen">
       <div className="container mx-auto px-4 md:px-6">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-24">
           
           {/* Info Side */}
           <motion.div 
-            initial={{ opacity: 0, x: -20 }}
+            initial={{ opacity: 0, x: -16 }}
             animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, ease: [0.33, 1, 0.68, 1] }}
             className="space-y-8"
           >
             <div>
@@ -76,8 +77,9 @@ export default function Contact() {
 
           {/* Form Side */}
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
+            initial={{ opacity: 0, x: 16 }}
             animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.1, ease: [0.33, 1, 0.68, 1] }}
             className="bg-card border border-white/5 rounded-2xl p-8 shadow-xl"
           >
             <Form {...form}>
@@ -142,6 +144,7 @@ export default function Contact() {
                   )}
                 />
 
+                <motion.div whileTap={{ scale: 0.97 }}>
                 <Button 
                   type="submit" 
                   disabled={isPending} 
@@ -149,6 +152,7 @@ export default function Contact() {
                 >
                   {isPending ? "Sending..." : "Send Message"}
                 </Button>
+                </motion.div>
               </form>
             </Form>
           </motion.div>

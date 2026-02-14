@@ -3,11 +3,11 @@ import { Link, useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import logoImg from "@assets/CSArtboard_NO_BG_LOGO_1771048731547.png";
+import logoImg from "@assets/no-bg-icon_1771048731548.png";
 
 const navItems = [
   { label: "Services", href: "/services" },
-  { label: "Case Studies", href: "/case-studies" },
+  { label: "Projects", href: "/case-studies" },
   { label: "About", href: "/about" },
   { label: "Careers", href: "/careers" },
   { label: "Blog", href: "/blog" },
@@ -52,11 +52,18 @@ export default function Navbar() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`text-sm font-medium transition-colors hover:text-primary ${
+                className={`relative text-sm font-medium transition-colors duration-200 hover:text-primary py-1 ${
                   location === item.href ? "text-primary" : "text-muted-foreground"
                 }`}
               >
                 {item.label}
+                {location === item.href && (
+                  <motion.span
+                    layoutId="nav-indicator"
+                    className="absolute -bottom-1 left-0 right-0 h-[2px] bg-primary rounded-full"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
               </Link>
             ))}
             <Link href="/contact">
@@ -83,18 +90,27 @@ export default function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-background border-b border-white/5 overflow-hidden"
+            transition={{ duration: 0.3, ease: [0.33, 1, 0.68, 1] }}
+            className="md:hidden bg-background/95 backdrop-blur-xl border-b border-white/5 overflow-hidden"
           >
             <div className="container mx-auto px-4 py-6 space-y-4">
-              {navItems.map((item) => (
-                <Link
+              {navItems.map((item, i) => (
+                <motion.div
                   key={item.href}
-                  href={item.href}
-                  className="flex items-center justify-between py-2 text-lg font-medium text-muted-foreground hover:text-white border-b border-white/5"
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.05, duration: 0.25 }}
                 >
-                  {item.label}
-                  <ChevronRight className="w-4 h-4" />
-                </Link>
+                  <Link
+                    href={item.href}
+                    className={`flex items-center justify-between py-3 text-lg font-medium border-b border-white/5 transition-colors duration-200 ${
+                      location === item.href ? "text-primary" : "text-muted-foreground hover:text-white"
+                    }`}
+                  >
+                    {item.label}
+                    <ChevronRight className="w-4 h-4" />
+                  </Link>
+                </motion.div>
               ))}
               <div className="pt-4">
                 <Link href="/contact">

@@ -2,6 +2,9 @@ import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
+import projects1 from "@assets/projects1.png";
+import projects2 from "@assets/projects2.png";
+import projects3 from "@assets/projects3.png";
 
 const cases = [
   {
@@ -10,7 +13,9 @@ const cases = [
     category: "Web App",
     description: "Rebuilding a legacy financial dashboard to handle 5TB of daily transactions with sub-second latency.",
     stats: ["-95% Query Time", "5TB Daily Data", "Real-time"],
-    color: "from-blue-500/20 to-cyan-500/20"
+    color: "from-blue-500/20 to-cyan-500/20",
+    image: projects1,
+    meta: { industry: "Financial Services", team: "6 engineers", duration: "14 weeks", stack: "React, Go, PostgreSQL, AWS" }
   },
   {
     title: "AI-Powered Medical Diagnosis",
@@ -18,7 +23,9 @@ const cases = [
     category: "AI Integration",
     description: "Integrating computer vision models to assist radiologists in detecting early signs of anomalies.",
     stats: ["99.8% Accuracy", "HIPAA Compliant", "Mobile First"],
-    color: "from-emerald-500/20 to-teal-500/20"
+    color: "from-emerald-500/20 to-teal-500/20",
+    image: projects2,
+    meta: { industry: "Healthcare", team: "4 engineers", duration: "10 weeks", stack: "Python, TensorFlow, React Native" }
   },
   {
     title: "Global E-commerce Migration",
@@ -26,18 +33,20 @@ const cases = [
     category: "Cloud Migration",
     description: "Migrating a monolithic Magento store to a headless Shopify Plus architecture with Next.js frontend.",
     stats: ["+40% Conversion", "0.8s Load Time", "Global CDN"],
-    color: "from-purple-500/20 to-pink-500/20"
+    color: "from-blue-500/20 to-indigo-500/20",
+    image: projects3,
+    meta: { industry: "E-commerce", team: "5 engineers", duration: "12 weeks", stack: "Next.js, Shopify Plus, Vercel" }
   }
 ];
 
 export default function CaseStudies() {
   return (
-    <div className="pt-24 pb-20">
+    <div className="pt-24 pb-24 md:pb-32">
       <div className="container mx-auto px-4 md:px-6">
         <div className="max-w-3xl mb-16">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">Selected Works</h1>
           <p className="text-xl text-muted-foreground">
-            A showcase of technical challenges we've solved for our partners.
+            Technical challenges we've solved for our partners — with measurable results.
           </p>
         </div>
 
@@ -45,16 +54,17 @@ export default function CaseStudies() {
           {cases.map((item, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 40 }}
+              initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.5, ease: [0.33, 1, 0.68, 1] }}
               className="group grid md:grid-cols-2 gap-8 md:gap-16 items-center"
             >
               {/* Image Side (Abstract) */}
               <div className={`aspect-[4/3] rounded-2xl bg-gradient-to-br ${item.color} border border-white/10 relative overflow-hidden order-last md:order-first`}>
-                <div className="absolute inset-0 bg-grid-pattern opacity-30" />
-                <div className="absolute bottom-8 left-8 right-8">
+                <img src={item.image} alt={item.title} className="absolute inset-0 w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
+                <div className="absolute bottom-8 left-8 right-8 z-10">
                   <div className="flex gap-4">
                     {item.stats.map((stat, j) => (
                       <div key={j} className="bg-background/80 backdrop-blur text-xs font-mono px-3 py-1 rounded-full border border-white/10">
@@ -69,9 +79,16 @@ export default function CaseStudies() {
               <div>
                 <div className="text-primary font-mono text-sm mb-4 uppercase tracking-wider">{item.category} — {item.client}</div>
                 <h2 className="text-3xl font-bold mb-4 group-hover:text-primary transition-colors">{item.title}</h2>
-                <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
+                <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
                   {item.description}
                 </p>
+                {/* Metadata row */}
+                <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm font-mono mb-8">
+                  <div><span className="text-muted-foreground/60">Industry</span> <span className="text-muted-foreground ml-2">{item.meta.industry}</span></div>
+                  <div><span className="text-muted-foreground/60">Team</span> <span className="text-muted-foreground ml-2">{item.meta.team}</span></div>
+                  <div><span className="text-muted-foreground/60">Duration</span> <span className="text-muted-foreground ml-2">{item.meta.duration}</span></div>
+                  <div><span className="text-muted-foreground/60">Stack</span> <span className="text-muted-foreground ml-2">{item.meta.stack}</span></div>
+                </div>
                 <Link href={`/case-studies/${i}`}>
                   <Button variant="outline" className="group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-all">
                     View Case Study <ArrowUpRight className="ml-2 w-4 h-4" />

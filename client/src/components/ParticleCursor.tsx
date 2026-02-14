@@ -4,7 +4,9 @@ export function ParticleCursor() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
+    // Skip on mobile or when user prefers reduced motion
     if (window.innerWidth < 768) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -15,7 +17,7 @@ export function ParticleCursor() {
     let animationFrameId: number;
     let particles: Particle[] = [];
     const mouse = { x: 0, y: 0 };
-    const maxParticles = 25;
+    const maxParticles = 20;
 
     class Particle {
       x: number;
@@ -28,16 +30,16 @@ export function ParticleCursor() {
       constructor() {
         this.x = mouse.x;
         this.y = mouse.y;
-        this.size = Math.random() * 3 + 1;
-        this.speedX = (Math.random() - 0.5) * 2;
-        this.speedY = (Math.random() - 0.5) * 2;
-        this.opacity = 1;
+        this.size = Math.random() * 2.5 + 0.5;
+        this.speedX = (Math.random() - 0.5) * 1.5;
+        this.speedY = (Math.random() - 0.5) * 1.5;
+        this.opacity = 0.8;
       }
 
       update() {
         this.x += this.speedX;
         this.y += this.speedY;
-        this.opacity -= 0.01;
+        this.opacity -= 0.015;
         
         // Slight gravitation toward mouse
         this.x += (mouse.x - this.x) * 0.02;
@@ -94,7 +96,7 @@ export function ParticleCursor() {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 pointer-events-none z-[100] hidden md:block"
+      className="fixed inset-0 pointer-events-none z-[45] hidden md:block"
     />
   );
 }

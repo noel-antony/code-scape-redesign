@@ -1,9 +1,9 @@
-import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
+import { motion, useScroll, useTransform, useReducedMotion, useMotionValueEvent } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Code, Layout, Smartphone } from "lucide-react";
 import { Link } from "wouter";
 import { useRef, useEffect, useState } from "react";
-import confetti from "canvas-confetti";
+import { FloatingIcons } from "@/components/FloatingIcons";
 
 function MagneticButton({ children, className, ...props }: any) {
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -19,25 +19,29 @@ function MagneticButton({ children, className, ...props }: any) {
     const y = (clientY - centerY) * 0.2;
     if (buttonRef.current) {
       buttonRef.current.style.transform = `translate(${x}px, ${y}px)`;
+      buttonRef.current.style.transition = 'transform 0.15s ease-out';
     }
   };
 
   const handleMouseLeave = () => {
     if (buttonRef.current) {
       buttonRef.current.style.transform = `translate(0px, 0px)`;
+      buttonRef.current.style.transition = 'transform 0.3s ease-out';
     }
   };
 
   return (
-    <Button
-      ref={buttonRef}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      className={`${className} transition-transform duration-200 ease-out`}
-      {...props}
-    >
-      {children}
-    </Button>
+    <motion.div whileTap={{ scale: 0.97 }} className="inline-block">
+      <Button
+        ref={buttonRef}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        className={`${className} will-change-transform`}
+        {...props}
+      >
+        {children}
+      </Button>
+    </motion.div>
   );
 }
 
@@ -73,6 +77,31 @@ function NumberCounter({ value }: { value: string }) {
   return <span ref={ref}>{count}</span>;
 }
 
+/** Word-by-word staggered fade-up headline */
+function AnimatedHeadline({ text, className }: { text: string; className?: string }) {
+  const words = text.split(" ");
+  return (
+    <h1 className={className}>
+      {words.map((word, i) => (
+        <span key={i} className="inline-block overflow-hidden mr-[0.28em] last:mr-0">
+          <motion.span
+            className="inline-block"
+            initial={{ y: "110%", opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{
+              duration: 0.5,
+              delay: 0.15 + i * 0.06,
+              ease: [0.33, 1, 0.68, 1],
+            }}
+          >
+            {word}
+          </motion.span>
+        </span>
+      ))}
+    </h1>
+  );
+}
+
 export default function Hero() {
   const containerRef = useRef(null);
   const shouldReduceMotion = useReducedMotion();
@@ -81,143 +110,147 @@ export default function Hero() {
     offset: ["start start", "end start"],
   });
 
-  const block1X = useTransform(scrollYProgress, [0, 0.5], [-200, 0]);
-  const block1Y = useTransform(scrollYProgress, [0, 0.5], [-100, 0]);
-  const block1Rotate = useTransform(scrollYProgress, [0, 0.5], [-15, 0]);
+  // ── Scroll timeline (section is 340vh) ──────────────────────────────
 
-  const block2X = useTransform(scrollYProgress, [0, 0.5], [200, 0]);
-  const block2Y = useTransform(scrollYProgress, [0, 0.5], [100, 0]);
-  const block2Rotate = useTransform(scrollYProgress, [0, 0.5], [15, 0]);
+  // Tagline "YOUR SUCCESS IS OUR MISSION" — appears early, long plateau
+  const taglineOpacity = useTransform(scrollYProgress, [0.08, 0.18], [0, 1]);
+  const taglineScale = useTransform(scrollYProgress, [0.08, 0.18], [0.95, 1]);
 
-  const opacity = useTransform(scrollYProgress, [0.4, 0.6], [0, 1]);
-  const scale = useTransform(scrollYProgress, [0.4, 0.6], [0.8, 1]);
+  // Intro content (badge, tagline, paragraph, buttons) — stays until 0.55
+  const introOpacity = useTransform(scrollYProgress, [0.55, 0.65], [1, 0]);
 
-  const handleCTAClick = () => {
-    confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 },
-      colors: ["#00A3FF", "#ffffff"],
-    });
-  };
+  // Service cards swoop in from below — delayed to give tagline+buttons plenty of time
+  const cardsOpacity = useTransform(scrollYProgress, [0.62, 0.74], [0, 1]);
+  const cardsY = useTransform(scrollYProgress, [0.62, 0.74], [100, 0]);
+
+  // Headline stays visible, fades out only AFTER cards have finished appearing
+  const headlineOpacity = useTransform(scrollYProgress, [0.8, 0.9], [1, 0]);
+
+  // Track which state is active for pointer-events
+  const [showCards, setShowCards] = useState(false);
+  useMotionValueEvent(scrollYProgress, "change", (v) => {
+    setShowCards(v >= 0.62);
+  });
 
   return (
-    <section ref={containerRef} className="relative min-h-[150vh] pt-20">
+    <section ref={containerRef} className="relative min-h-[220vh] md:min-h-[340vh] pt-20">
       <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden">
         {/* Background Grid */}
         <div className="absolute inset-0 bg-grid-pattern opacity-[0.15] pointer-events-none" />
         <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background pointer-events-none" />
+        {/* Radial depth glow behind hero */}
+        <div className="absolute inset-0 pointer-events-none" style={{
+          background: 'radial-gradient(circle at 50% 40%, rgba(0,163,255,0.18), transparent 60%)',
+        }} />
 
-        {/* Assembly Animation */}
-        {!shouldReduceMotion && (
-          <div className="absolute inset-0 pointer-events-none">
-            <motion.div
-              style={{ x: block1X, y: block1Y, rotate: block1Rotate }}
-              className="absolute top-1/4 left-1/4 w-32 h-32 border border-primary/30 rounded-lg bg-primary/5 flex items-center justify-center"
-            >
-              <Layout className="text-primary/40 w-12 h-12" />
-            </motion.div>
-            <motion.div
-              style={{ x: block2X, y: block2Y, rotate: block2Rotate }}
-              className="absolute bottom-1/4 right-1/4 w-40 h-40 border border-white/20 rounded-lg bg-white/5 flex items-center justify-center"
-            >
-              <Code className="text-white/20 w-16 h-16" />
-            </motion.div>
-            <motion.svg className="absolute inset-0 w-full h-full">
-              <motion.line
-                x1="25%" y1="25%" x2="50%" y2="50%"
-                stroke="currentColor" strokeWidth="1" strokeDasharray="4 4"
-                className="text-primary/20"
-                style={{ opacity: useTransform(scrollYProgress, [0.2, 0.5], [0, 1]) }}
-              />
-              <motion.line
-                x1="75%" y1="75%" x2="50%" y2="50%"
-                stroke="currentColor" strokeWidth="1" strokeDasharray="4 4"
-                className="text-white/10"
-                style={{ opacity: useTransform(scrollYProgress, [0.2, 0.5], [0, 1]) }}
-              />
-            </motion.svg>
-          </div>
-        )}
+        {/* Floating engineering icons — converge toward center on scroll */}
+        <FloatingIcons scrollYProgress={scrollYProgress} />
 
-        <div className="container mx-auto px-4 md:px-6 relative z-10 text-center">
+        {/* Content container — headline + switchable layers */}
+        <div className="container mx-auto px-4 md:px-6 relative z-10 h-full flex flex-col items-center justify-start pt-[18vh]">
+          {/* Persistent headline — fades out only AFTER cards finish appearing */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            style={{ opacity: headlineOpacity }}
+            className="text-center mb-8 pointer-events-none will-change-[opacity]"
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-sm text-primary mb-8 font-mono">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-              </span>
-              Accepting New Projects
-            </div>
-            
-            <div className="relative overflow-hidden mb-6">
-              <motion.h1 
-                initial={{ y: "100%" }}
-                animate={{ y: 0 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-                className="text-4xl md:text-7xl font-bold tracking-tight max-w-4xl mx-auto"
-              >
-                We build reliable digital products that scale
-              </motion.h1>
-            </div>
-
-            <motion.div style={{ opacity, scale }}>
-              <h2 className="text-3xl md:text-6xl font-bold text-primary mb-10">
-                YOUR SUCCESS IS OUR MISSION
-              </h2>
-            </motion.div>
-            
-            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
-              From complex cloud architectures to stunning user interfaces, Codescape is where creativity meets engineering precision.
-            </p>
-
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link href="/contact">
-                <MagneticButton 
-                  onClick={handleCTAClick}
-                  size="lg" 
-                  className="h-12 px-8 text-base bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20"
-                >
-                  Start Your Project
-                  <ArrowRight className="ml-2 w-4 h-4" />
-                </MagneticButton>
-              </Link>
-              <Link href="/services">
-                <Button size="lg" variant="outline" className="h-12 px-8 text-base border-white/10 hover:bg-white/5 transition-all">
-                  Explore Services
-                </Button>
-              </Link>
-            </div>
+            <AnimatedHeadline
+              text="We build reliable digital products that scale."
+              className="text-4xl md:text-7xl font-bold tracking-tight max-w-4xl mx-auto"
+            />
           </motion.div>
-        </div>
-      </div>
 
-      <div className="container mx-auto px-4 md:px-6 relative z-10 pb-20">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[
-            { icon: Layout, title: "Web Development", desc: "Performance-first React applications tailored for scale." },
-            { icon: Smartphone, title: "Mobile Apps", desc: "Native and cross-platform experiences that users love." },
-            { icon: Code, title: "Cloud Architecture", desc: "Robust backend systems built on AWS and Google Cloud." },
-          ].map((item, i) => (
+          {/* Switchable area below the headline */}
+          <div className="relative flex-1 w-full">
+            {/* Intro content (badge, tagline, paragraph, buttons) — fades out first */}
             <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-              viewport={{ once: true }}
-              className="p-6 rounded-2xl bg-white/5 border border-white/5 text-left hover-elevate group"
+              style={{ opacity: introOpacity, pointerEvents: showCards ? 'none' : 'auto' }}
+              className="absolute inset-0 flex flex-col items-center text-center pt-4 will-change-[opacity]"
             >
-              <div className="w-12 h-12 rounded-lg bg-background flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <item.icon className="w-6 h-6 text-primary" />
-              </div>
-              <h3 className="text-xl font-bold mb-2">{item.title}</h3>
-              <p className="text-muted-foreground">{item.desc}</p>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+              >
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-sm text-primary mb-8 font-mono">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                  </span>
+                  Accepting New Projects
+                </div>
+              </motion.div>
+
+              <motion.div style={{ opacity: taglineOpacity, scale: taglineScale }}>
+                <h2 className="text-3xl md:text-6xl font-bold text-primary mb-10">
+                  YOUR SUCCESS IS OUR MISSION
+                </h2>
+              </motion.div>
+              
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.6 }}
+                className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed"
+              >
+                From complex cloud architectures to stunning user interfaces, Codescape is where creativity meets technology.
+              </motion.p>
+
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.7 }}
+                className="flex flex-col items-center gap-6"
+              >
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                  <Link href="/contact">
+                    <MagneticButton 
+                      size="lg" 
+                      className="h-12 px-8 text-base bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20"
+                    >
+                      Start Your Project
+                      <ArrowRight className="ml-2 w-4 h-4" />
+                    </MagneticButton>
+                  </Link>
+                  <Link href="/services">
+                    <Button size="lg" variant="outline" className="h-12 px-8 text-base border-white/10 hover:bg-white/5 transition-all">
+                      Explore Services
+                    </Button>
+                  </Link>
+                </div>
+                {/* Trust indicators */}
+                <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground/70">
+                  <span className="flex items-center gap-1.5"><span className="text-primary">✔</span> Usually respond within 24 hours</span>
+                  <span className="flex items-center gap-1.5"><span className="text-primary">✔</span> Free technical consultation</span>
+                  <span className="flex items-center gap-1.5"><span className="text-primary">✔</span> No vendor lock-in</span>
+                </div>
+              </motion.div>
             </motion.div>
-          ))}
+
+            {/* Service cards — swoop in from below */}
+            <motion.div
+              style={{ opacity: cardsOpacity, y: cardsY, pointerEvents: showCards ? 'auto' : 'none' }}
+              className="absolute inset-0 flex items-start justify-center pt-4 will-change-[opacity,transform]"
+            >
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto w-full">
+                {[
+                  { icon: Layout, title: "Web Development", desc: "Performance-first React applications tailored for scale." },
+                  { icon: Smartphone, title: "Mobile Apps", desc: "Native and cross-platform experiences that users love." },
+                  { icon: Code, title: "Cloud Architecture", desc: "Robust backend systems built on AWS and Google Cloud." },
+                ].map((item, i) => (
+                  <div
+                    key={i}
+                    className="p-6 rounded-2xl bg-surface-1 border border-white/5 text-left hover-elevate group cursor-default"
+                  >
+                    <div className="w-12 h-12 rounded-lg bg-background flex items-center justify-center mb-4 group-hover:scale-105 transition-transform duration-300 ease-out">
+                      <item.icon className="w-6 h-6 text-primary" />
+                    </div>
+                    <h3 className="text-xl font-bold mb-2">{item.title}</h3>
+                    <p className="text-muted-foreground">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
         </div>
       </div>
     </section>

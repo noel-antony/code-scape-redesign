@@ -1,4 +1,5 @@
 import { Link } from "wouter";
+import { motion } from "framer-motion";
 
 const articles = [
   {
@@ -26,13 +27,24 @@ const articles = [
 
 export default function Blog() {
   return (
-    <div className="pt-24 pb-20">
+    <div className="pt-24 pb-0">
       <div className="container mx-auto px-4 md:px-6">
-        <h1 className="text-4xl md:text-6xl font-bold mb-16">Engineering Blog</h1>
+        <motion.h1
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: [0.33, 1, 0.68, 1] }}
+          className="text-4xl md:text-6xl font-bold mb-16"
+        >Engineering Blog</motion.h1>
         
-        <div className="grid gap-12 max-w-4xl">
+        <div className="grid gap-12 max-w-4xl pb-24 md:pb-32">
           {articles.map((article, i) => (
-            <article key={i} className="group cursor-pointer border-b border-white/5 pb-12 last:border-0">
+            <motion.article
+              key={i}
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.08, duration: 0.4, ease: [0.33, 1, 0.68, 1] }}
+              viewport={{ once: true }}
+              className="group cursor-pointer border-b border-white/5 pb-12 last:border-0">
               <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4 font-mono">
                 <span className="text-primary">{article.tag}</span>
                 <span>•</span>
@@ -50,7 +62,7 @@ export default function Blog() {
               <p className="text-lg text-muted-foreground leading-relaxed">
                 {article.excerpt}
               </p>
-            </article>
+            </motion.article>
           ))}
         </div>
       </div>

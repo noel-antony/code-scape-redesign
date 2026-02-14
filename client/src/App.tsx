@@ -18,6 +18,7 @@ import Contact from "@/pages/Contact";
 import NotFound from "@/pages/not-found";
 import { ParticleCursor } from "@/components/ParticleCursor";
 import { PageTransition } from "@/components/PageTransition";
+import { IntroReveal } from "@/components/IntroReveal";
 
 function ScrollToTop() {
   const [pathname] = useLocation();
@@ -88,6 +89,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
+        <IntroReveal />
         <ParticleCursor />
         <Router />
         <Toaster />
