@@ -1,0 +1,183 @@
+Create a complete multi-page responsive website for a technology engineering company named CODESCAPE.
+
+This is not a basic landing page. The goal is to build a premium digital presence that communicates reliability, scalability, and engineering thinking. The experience should feel closer to a software platform than a marketing template.
+
+Brand rules:
+
+Company name must always appear as CODESCAPE (uppercase)
+
+Tagline: “Where Creativity Meets Technology”
+
+Tone: confident, structured, technical, trustworthy
+
+Avoid startup/playful aesthetics and cartoon illustrations
+
+Avoid generic templates
+
+Design language:
+
+Dark professional theme (charcoal / deep navy background)
+
+Subtle blue accent color
+
+Clean grid layout and strong spacing rhythm
+
+Large typography hierarchy (headings carry the design)
+
+Thin dividers and soft section separation
+
+Minimal icons
+
+No clipart or stock-illustration look
+
+Premium SaaS / enterprise feel similar to modern agency websites
+
+Interaction philosophy:
+Motion should guide attention, not decorate.
+Animations must be smooth and subtle, never distracting.
+
+Include:
+
+opacity + slight upward reveal on scroll
+
+hover elevation on cards
+
+magnetic button hover effect
+
+number counters when visible
+
+smooth section transitions
+
+page color wipe transition between routes
+
+lazy loading images
+
+no heavy parallax or particle systems
+
+no infinite auto-scroll carousels
+
+no layout shifts
+
+Signature hero interaction:
+Instead of a technical diagram, show transformation.
+
+Hero starts minimal with headline:
+“We build reliable digital products that scale”
+
+As user scrolls:
+abstract UI elements assemble into a structured interface layout
+(idea → organized product concept)
+
+Final hero state displays:
+YOUR SUCCESS IS OUR MISSION
+
+This should visually communicate turning ideas into production systems.
+
+Tech stack:
+Use React + TailwindCSS + Framer Motion + React Router
+Component based architecture
+Reusable layout components
+Clean folder structure
+
+Performance requirements:
+Mobile-first responsive design
+Optimized images
+Minimal JS on initial load
+Fast first paint
+No horizontal scrolling
+Lazy load heavy sections
+
+Site architecture (multi page):
+
+Home
+
+high impact hero with assembling interface animation
+
+client logo strip
+
+services preview cards
+
+featured case study highlight
+
+testimonials section
+
+final CTA section
+
+Services (main page)
+
+grid of service modules
+
+each card leads to detail page
+
+Service detail pages
+structure:
+problem → approach → technologies → architecture → outcome
+
+Case Studies
+
+portfolio listing
+
+expandable case study layout
+Each case study shows:
+challenge
+solution
+tech stack
+measurable result
+
+About
+
+mission
+
+vision
+
+engineering philosophy
+
+team member grid with roles
+
+Careers
+
+job listings (mock data)
+
+company culture highlights
+
+Blog
+
+article card grid
+
+category tags
+
+clean reading layout page
+
+Contact
+
+professional contact form
+
+business information
+
+Legal
+
+privacy policy page
+
+terms page
+
+Additional required sections:
+Client showcase logos
+Testimonials/social proof
+Meet the team
+Analytics placeholder (fake tracking panel UI element)
+
+Visual behavior:
+Sections should feel like slides
+Alternate subtle background tones
+Full-width layouts
+Comfortable spacing
+Typography dominant
+
+Coding style:
+Well structured components
+Readable naming
+Reusable UI components (Card, Section, Container, Heading, Button)
+Separate layout and pages
+
+Goal:
+The final result should feel like a premium engineering partner website that demonstrates capability instead of describing it. It must look production-ready and not like a student project.
