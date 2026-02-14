@@ -1,10 +1,35 @@
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { Link } from "wouter";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import Hero from "@/components/Hero";
 import { Button } from "@/components/ui/button";
 import { LogoMarquee } from "@/components/LogoMarquee";
 import fintechImg from "@assets/fintech.jpg";
+
+/** Animates a number from 0 → end when in view */
+function CountUp({ end, suffix = "", decimals = 0, duration = 1.6 }: { end: number; suffix?: string; decimals?: number; duration?: number }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-40px" });
+  const [display, setDisplay] = useState("0" + suffix);
+
+  useEffect(() => {
+    if (!inView) return;
+    const start = performance.now();
+    const step = (now: number) => {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / (duration * 1000), 1);
+      // ease-out cubic
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = eased * end;
+      setDisplay(current.toFixed(decimals) + suffix);
+      if (progress < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }, [inView, end, suffix, decimals, duration]);
+
+  return <span ref={ref}>{display}</span>;
+}
 
 const clientLogos = ['Acme Corp', 'GlobalTech', 'Nebula', 'FoxRun', 'Circle', 'Vertex', 'Oxide'];
 
@@ -76,17 +101,77 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-32 relative bg-surface-2">
-        <div className="absolute inset-0 bg-primary/5 clip-path-slant" />
+      <section className="py-20 relative overflow-hidden" style={{ background: "linear-gradient(to right, rgba(0,163,255,0.08) 0%, rgba(0,0,0,1) 30%, rgba(0,0,0,1) 70%, rgba(0,163,255,0.08) 100%)" }}>
+        {/* Soft animated glow accents on edges */}
+        <motion.div
+          className="absolute top-1/2 -translate-y-1/2 -left-20 w-72 h-[120%] rounded-full bg-primary/12 blur-[100px]"
+          animate={{ opacity: [0.3, 0.5, 0.3] }}
+          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute top-1/2 -translate-y-1/2 -right-20 w-72 h-[120%] rounded-full bg-primary/12 blur-[100px]"
+          animate={{ opacity: [0.3, 0.5, 0.3] }}
+          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 2.5 }}
+        />
+
         <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">Ready to scale your vision?</h2>
-          <p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto">
+          {/* Stats row with count-up */}
+          <div className="flex flex-wrap justify-center gap-10 md:gap-16 mb-16">
+            {[
+              { end: 50, suffix: "+", decimals: 0, label: "Projects Delivered" },
+              { end: 99.9, suffix: "%", decimals: 1, label: "Uptime SLA" },
+              { end: 4.9, suffix: "★", decimals: 1, label: "Client Rating" },
+            ].map((stat, i) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.1, ease: [0.33, 1, 0.68, 1] }}
+                className="text-center"
+              >
+                <div className="text-3xl md:text-4xl font-bold text-primary mb-1">
+                  <CountUp end={stat.end} suffix={stat.suffix} decimals={stat.decimals} />
+                </div>
+                <div className="text-sm font-mono text-muted-foreground uppercase tracking-wider">{stat.label}</div>
+              </motion.div>
+            ))}
+          </div>
+
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, ease: [0.33, 1, 0.68, 1] }}
+            className="text-4xl md:text-5xl font-bold mb-6"
+          >
+            Ready to scale your vision?
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1, ease: [0.33, 1, 0.68, 1] }}
+            className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto"
+          >
             Let's discuss how we can engineer a solution that meets your business goals.
-          </p>
+          </motion.p>
+
+          {/* CTA button with animated glow ring */}
           <Link href="/contact">
-            <motion.div whileTap={{ scale: 0.97 }} className="inline-block">
-              <Button size="lg" className="h-14 px-10 text-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300 shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30">
-                Get in Touch <ArrowRight className="ml-2" />
+            <motion.div
+              whileTap={{ scale: 0.97 }}
+              whileHover={{ scale: 1.03 }}
+              className="inline-block relative group"
+            >
+              {/* Pulsing glow ring behind button */}
+              <motion.div
+                className="absolute -inset-1 rounded-xl bg-primary/30 blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                animate={{ scale: [1, 1.08, 1] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              />
+              <Button size="lg" className="relative h-14 px-10 text-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300 shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30">
+                Get in Touch <ArrowRight className="ml-2 transition-transform duration-300 group-hover:translate-x-1" />
               </Button>
             </motion.div>
           </Link>

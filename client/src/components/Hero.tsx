@@ -119,9 +119,21 @@ export default function Hero() {
   // Intro content (badge, tagline, paragraph, buttons) — stays until 0.55
   const introOpacity = useTransform(scrollYProgress, [0.55, 0.65], [1, 0]);
 
-  // Service cards swoop in from below — delayed to give tagline+buttons plenty of time
+  // Service cards swoop in from different directions
   const cardsOpacity = useTransform(scrollYProgress, [0.62, 0.74], [0, 1]);
-  const cardsY = useTransform(scrollYProgress, [0.62, 0.74], [100, 0]);
+  // Left card — from left
+  const cardLeftX = useTransform(scrollYProgress, [0.62, 0.74], [-120, 0]);
+  const cardLeftY = useTransform(scrollYProgress, [0.62, 0.74], [40, 0]);
+  // Center card — from below
+  const cardCenterY = useTransform(scrollYProgress, [0.62, 0.74], [120, 0]);
+  // Right card — from right
+  const cardRightX = useTransform(scrollYProgress, [0.62, 0.74], [120, 0]);
+  const cardRightY = useTransform(scrollYProgress, [0.62, 0.74], [40, 0]);
+
+  // Tagline swoops up after cards settle
+  const successOpacity = useTransform(scrollYProgress, [0.72, 0.82], [0, 1]);
+  const successY = useTransform(scrollYProgress, [0.72, 0.82], [60, 0]);
+  const successScale = useTransform(scrollYProgress, [0.72, 0.82], [0.9, 1]);
 
   // Headline stays visible, fades out only AFTER cards have finished appearing
   const headlineOpacity = useTransform(scrollYProgress, [0.8, 0.9], [1, 0]);
@@ -164,7 +176,7 @@ export default function Hero() {
             {/* Intro content (badge, tagline, paragraph, buttons) — fades out first */}
             <motion.div
               style={{ opacity: introOpacity, pointerEvents: showCards ? 'none' : 'auto' }}
-              className="absolute inset-0 flex flex-col items-center text-center pt-4 will-change-[opacity]"
+              className="absolute inset-0 flex flex-col items-center text-center pt-0 will-change-[opacity]"
             >
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -180,12 +192,6 @@ export default function Hero() {
                 </div>
               </motion.div>
 
-              <motion.div style={{ opacity: taglineOpacity, scale: taglineScale }}>
-                <h2 className="text-3xl md:text-6xl font-bold text-primary mb-10">
-                  YOUR SUCCESS IS OUR MISSION
-                </h2>
-              </motion.div>
-              
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -226,29 +232,36 @@ export default function Hero() {
               </motion.div>
             </motion.div>
 
-            {/* Service cards — swoop in from below */}
+            {/* Service cards — swoop in from different directions */}
             <motion.div
-              style={{ opacity: cardsOpacity, y: cardsY, pointerEvents: showCards ? 'auto' : 'none' }}
-              className="absolute inset-0 flex items-start justify-center pt-4 will-change-[opacity,transform]"
+              style={{ opacity: cardsOpacity, pointerEvents: showCards ? 'auto' : 'none' }}
+              className="absolute inset-0 flex flex-col items-center justify-start pt-4 will-change-[opacity,transform]"
             >
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto w-full">
                 {[
-                  { icon: Layout, title: "Web Development", desc: "Performance-first React applications tailored for scale." },
-                  { icon: Smartphone, title: "Mobile Apps", desc: "Native and cross-platform experiences that users love." },
-                  { icon: Code, title: "Cloud Architecture", desc: "Robust backend systems built on AWS and Google Cloud." },
+                  { icon: Layout, title: "Web Development", desc: "Performance-first React applications tailored for scale.", x: cardLeftX, y: cardLeftY },
+                  { icon: Smartphone, title: "Mobile Apps", desc: "Native and cross-platform experiences that users love.", x: undefined, y: cardCenterY },
+                  { icon: Code, title: "Cloud Architecture", desc: "Robust backend systems built on AWS and Google Cloud.", x: cardRightX, y: cardRightY },
                 ].map((item, i) => (
-                  <div
+                  <motion.div
                     key={i}
-                    className="p-6 rounded-2xl bg-surface-1 border border-white/5 text-left hover-elevate group cursor-default"
+                    style={{ x: item.x ?? 0, y: item.y }}
+                    className="p-6 rounded-2xl bg-surface-1 border border-white/5 text-left hover-elevate group cursor-default will-change-transform"
                   >
                     <div className="w-12 h-12 rounded-lg bg-background flex items-center justify-center mb-4 group-hover:scale-105 transition-transform duration-300 ease-out">
                       <item.icon className="w-6 h-6 text-primary" />
                     </div>
                     <h3 className="text-xl font-bold mb-2">{item.title}</h3>
                     <p className="text-muted-foreground">{item.desc}</p>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
+              <motion.h2
+                style={{ opacity: successOpacity, y: successY, scale: successScale }}
+                className="text-2xl md:text-5xl font-bold text-primary mt-16 text-center will-change-transform"
+              >
+                YOUR SUCCESS IS OUR MISSION
+              </motion.h2>
             </motion.div>
           </div>
         </div>

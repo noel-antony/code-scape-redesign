@@ -90,16 +90,70 @@ export default function Services() {
       </div>
 
       {/* Process CTA */}
-      <section className="py-24 md:py-32 mt-16 md:mt-24 bg-surface-1">
-        <div className="container mx-auto px-4 md:px-6 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">How We Work</h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
-            Discovery, architecture, build, launch — each phase is structured for clarity and measurable outcomes.
-          </p>
+      <section className="py-24 md:py-32 mt-16 md:mt-24 relative overflow-hidden" style={{ background: "linear-gradient(to right, rgba(0,163,255,0.08) 0%, rgba(0,0,0,1) 30%, rgba(0,0,0,1) 70%, rgba(0,163,255,0.08) 100%)" }}>
+        {/* Animated glow accents */}
+        <motion.div
+          className="absolute top-1/2 -translate-y-1/2 -left-20 w-64 h-[120%] rounded-full bg-primary/12 blur-[100px]"
+          animate={{ opacity: [0.3, 0.5, 0.3] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute top-1/2 -translate-y-1/2 -right-20 w-64 h-[120%] rounded-full bg-primary/12 blur-[100px]"
+          animate={{ opacity: [0.3, 0.5, 0.3] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 3 }}
+        />
+
+        <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
+          {/* Process steps */}
+          <div className="flex flex-wrap justify-center gap-8 md:gap-12 mb-14">
+            {["Discovery", "Architecture", "Build", "Launch"].map((step, i) => (
+              <motion.div
+                key={step}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.1, ease: [0.33, 1, 0.68, 1] }}
+                className="flex items-center gap-3"
+              >
+                <span className="w-8 h-8 rounded-full bg-primary/15 border border-primary/30 flex items-center justify-center text-sm font-bold text-primary">{i + 1}</span>
+                <span className="text-lg font-medium text-muted-foreground">{step}</span>
+              </motion.div>
+            ))}
+          </div>
+
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, ease: [0.33, 1, 0.68, 1] }}
+            className="text-3xl md:text-4xl font-bold mb-4"
+          >
+            How We Work
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1, ease: [0.33, 1, 0.68, 1] }}
+            className="text-lg text-muted-foreground max-w-2xl mx-auto mb-10"
+          >
+            Each phase is structured for clarity and measurable outcomes.
+          </motion.p>
           <Link href="/contact">
-            <Button size="lg" className="h-12 px-8 bg-primary text-primary-foreground hover:bg-primary/90">
-              Start a Conversation <ArrowRight className="ml-2 w-4 h-4" />
-            </Button>
+            <motion.div
+              whileTap={{ scale: 0.97 }}
+              whileHover={{ scale: 1.03 }}
+              className="inline-block relative group"
+            >
+              <motion.div
+                className="absolute -inset-1 rounded-xl bg-primary/25 blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                animate={{ scale: [1, 1.08, 1] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              />
+              <Button size="lg" className="relative h-12 px-8 bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300 shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30">
+                Start a Conversation <ArrowRight className="ml-2 w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+              </Button>
+            </motion.div>
           </Link>
         </div>
       </section>

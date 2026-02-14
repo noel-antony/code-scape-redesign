@@ -19,6 +19,22 @@ const ICON_PATHS = [
   "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z",
   // Signal / API
   "M2 20h.01M7 20v-4M12 20v-8M17 20V8M22 20V4",
+  // Layers
+  "M12 2L2 7l10 5 10-5-10-5ZM2 17l10 5 10-5M2 12l10 5 10-5",
+  // Zap / lightning
+  "M13 2L3 14h9l-1 8 10-12h-9l1-8Z",
+  // Settings / gear
+  "M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z",
+  // Network / globe
+  "M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20ZM2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10Z",
+  // Repeat: Terminal (smaller, different position)
+  "M4 17l6-5-6-5M12 19h8",
+  // Repeat: Code brackets
+  "M16 18l6-6-6-6M8 6l-6 6 6 6",
+  // Repeat: CPU
+  "M5 5h14v14H5ZM9 9h6v6H9ZM2 9h3M2 15h3M19 9h3M19 15h3M9 2v3M15 2v3M9 19v3M15 19v3",
+  // Repeat: Git branch
+  "M6 3v12M18 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM18 9a9 9 0 0 1-9 9",
 ];
 
 interface IconConfig {
@@ -43,19 +59,23 @@ function seeded(i: number, offset: number): number {
 }
 
 function generateIcons(): IconConfig[] {
-  return ICON_PATHS.map((path, i) => ({
-    path,
-    // Spread icons across the viewport — avoid the dead center (40–60)
-    x: i < 4
-      ? 5 + seeded(i, 1) * 30        // left side 5–35%
-      : 65 + seeded(i, 2) * 30,       // right side 65–95%
-    y: 10 + seeded(i, 3) * 75,        // 10–85%
-    size: 26 + seeded(i, 4) * 10,      // 26–36px
-    opacity: 0.4 + seeded(i, 5) * 0.2, // 0.4–0.6
-    driftX: 6 + seeded(i, 6) * 8,     // ±6–14px
-    driftY: 5 + seeded(i, 7) * 6,     // ±5–11px
-    driftDuration: 6 + seeded(i, 8) * 4, // 6–10s
-  }));
+  const count = ICON_PATHS.length; // 16 icons
+  return ICON_PATHS.map((path, i) => {
+    // Distribute in 4 columns: far-left, left-center, right-center, far-right
+    const col = i % 4;
+    const xBands = [3, 22, 68, 82]; // band start %
+    const xWidths = [14, 14, 14, 14]; // band width %
+    return {
+      path,
+      x: xBands[col] + seeded(i, 1) * xWidths[col],
+      y: 5 + seeded(i, 3) * 85,        // 5–90%
+      size: 22 + seeded(i, 4) * 12,     // 22–34px
+      opacity: 0.35 + seeded(i, 5) * 0.2, // 0.35–0.55
+      driftX: 5 + seeded(i, 6) * 10,    // ±5–15px
+      driftY: 4 + seeded(i, 7) * 8,     // ±4–12px
+      driftDuration: 5 + seeded(i, 8) * 5, // 5–10s
+    };
+  });
 }
 
 interface FloatingIconsProps {
