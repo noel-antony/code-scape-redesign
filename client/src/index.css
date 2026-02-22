@@ -76,21 +76,11 @@
 }
 
 @layer utilities {
-  .text-glow {
-    text-shadow: 0 0 10px rgba(0, 163, 255, 0.5);
-  }
   .bg-grid-pattern {
     background-image: linear-gradient(to right, hsl(var(--grid-color) / 0.1) 1px, transparent 1px),
       linear-gradient(to bottom, hsl(var(--grid-color) / 0.1) 1px, transparent 1px);
     background-size: 40px 40px;
   }
-  .glass-card {
-    @apply bg-card/40 backdrop-blur-md border border-white/5 shadow-xl;
-  }
-  .clip-path-slant {
-    clip-path: polygon(0 15%, 100% 0, 100% 85%, 0 100%);
-  }
-
   /* Card hover elevation */
   .hover-elevate {
     @apply transition-all duration-300 ease-out;

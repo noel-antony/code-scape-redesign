@@ -2,7 +2,7 @@ import { motion, useScroll, useTransform, useReducedMotion, useMotionValueEvent 
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Code, Layout, Smartphone } from "lucide-react";
 import { Link } from "wouter";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useState } from "react";
 import { FloatingIcons } from "@/components/FloatingIcons";
 
 function MagneticButton({ children, className, ...props }: any) {
@@ -45,38 +45,6 @@ function MagneticButton({ children, className, ...props }: any) {
   );
 }
 
-function NumberCounter({ value }: { value: string }) {
-  const [count, setCount] = useState(0);
-  const target = parseInt(value);
-  const ref = useRef(null);
-
-  useEffect(() => {
-    let startTime: number;
-    const duration = 2000;
-
-    const animate = (currentTime: number) => {
-      if (!startTime) startTime = currentTime;
-      const progress = Math.min((currentTime - startTime) / duration, 1);
-      setCount(Math.floor(progress * target));
-      if (progress < 1) {
-        requestAnimationFrame(animate);
-      }
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) {
-        requestAnimationFrame(animate);
-        observer.disconnect();
-      }
-    });
-
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, [target]);
-
-  return <span ref={ref}>{count}</span>;
-}
-
 /** Word-by-word staggered fade-up headline */
 function AnimatedHeadline({ text, className }: { text: string; className?: string }) {
   const words = text.split(" ");
@@ -104,48 +72,43 @@ function AnimatedHeadline({ text, className }: { text: string; className?: strin
 
 export default function Hero() {
   const containerRef = useRef(null);
-  const shouldReduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end start"],
   });
 
-  // ── Scroll timeline (section is 340vh) ──────────────────────────────
+  // ── Scroll timeline (section is 380vh) ──────────────────────────────
 
-  // Tagline "YOUR SUCCESS IS OUR MISSION" — appears early, long plateau
-  const taglineOpacity = useTransform(scrollYProgress, [0.08, 0.18], [0, 1]);
-  const taglineScale = useTransform(scrollYProgress, [0.08, 0.18], [0.95, 1]);
+  // Intro content fades out quickly — no dead scroll
+  const introOpacity = useTransform(scrollYProgress, [0.05, 0.18], [1, 0]);
 
-  // Intro content (badge, tagline, paragraph, buttons) — stays until 0.55
-  const introOpacity = useTransform(scrollYProgress, [0.55, 0.65], [1, 0]);
-
-  // Service cards swoop in from different directions
-  const cardsOpacity = useTransform(scrollYProgress, [0.62, 0.74], [0, 1]);
+  // Service cards swoop in immediately after intro fades
+  const cardsOpacity = useTransform(scrollYProgress, [0.16, 0.30], [0, 1]);
   // Left card — from left
-  const cardLeftX = useTransform(scrollYProgress, [0.62, 0.74], [-120, 0]);
-  const cardLeftY = useTransform(scrollYProgress, [0.62, 0.74], [40, 0]);
+  const cardLeftX = useTransform(scrollYProgress, [0.16, 0.30], [-120, 0]);
+  const cardLeftY = useTransform(scrollYProgress, [0.16, 0.30], [40, 0]);
   // Center card — from below
-  const cardCenterY = useTransform(scrollYProgress, [0.62, 0.74], [120, 0]);
+  const cardCenterY = useTransform(scrollYProgress, [0.16, 0.30], [120, 0]);
   // Right card — from right
-  const cardRightX = useTransform(scrollYProgress, [0.62, 0.74], [120, 0]);
-  const cardRightY = useTransform(scrollYProgress, [0.62, 0.74], [40, 0]);
+  const cardRightX = useTransform(scrollYProgress, [0.16, 0.30], [120, 0]);
+  const cardRightY = useTransform(scrollYProgress, [0.16, 0.30], [40, 0]);
 
-  // Tagline swoops up after cards settle
-  const successOpacity = useTransform(scrollYProgress, [0.72, 0.82], [0, 1]);
-  const successY = useTransform(scrollYProgress, [0.72, 0.82], [60, 0]);
-  const successScale = useTransform(scrollYProgress, [0.72, 0.82], [0.9, 1]);
+  // "YOUR SUCCESS IS OUR MISSION" — appears mid-way through card plateau
+  const successOpacity = useTransform(scrollYProgress, [0.45, 0.56], [0, 1]);
+  const successY = useTransform(scrollYProgress, [0.45, 0.56], [60, 0]);
+  const successScale = useTransform(scrollYProgress, [0.45, 0.56], [0.9, 1]);
 
-  // Headline stays visible, fades out only AFTER cards have finished appearing
-  const headlineOpacity = useTransform(scrollYProgress, [0.8, 0.9], [1, 0]);
+  // Headline fades only near the very end
+  const headlineOpacity = useTransform(scrollYProgress, [0.84, 0.94], [1, 0]);
 
   // Track which state is active for pointer-events
   const [showCards, setShowCards] = useState(false);
   useMotionValueEvent(scrollYProgress, "change", (v) => {
-    setShowCards(v >= 0.62);
+    setShowCards(v >= 0.16);
   });
 
   return (
-    <section ref={containerRef} className="relative min-h-[220vh] md:min-h-[340vh] pt-20">
+    <section ref={containerRef} className="relative min-h-[260vh] md:min-h-[380vh] pt-20">
       <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden">
         {/* Background Grid */}
         <div className="absolute inset-0 bg-grid-pattern opacity-[0.15] pointer-events-none" />

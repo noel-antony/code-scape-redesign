@@ -1,5 +1,3 @@
-import { useRef } from "react";
-
 interface LogoMarqueeProps {
   logos: string[];
 }
@@ -23,7 +21,7 @@ export function LogoMarquee({ logos }: LogoMarqueeProps) {
         {items.map((logo, i) => (
           <span
             key={`${logo}-${i}`}
-            className="text-2xl font-bold text-muted-foreground/60 select-none shrink-0 transition-all duration-300 hover:text-white hover:text-3xl hover:scale-110 cursor-default"
+            className="text-2xl font-bold text-muted-foreground/60 select-none shrink-0 transition-all duration-300 hover:text-white hover:scale-125 cursor-default inline-block"
           >
             {logo}
           </span>

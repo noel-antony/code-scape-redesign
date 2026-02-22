@@ -101,7 +101,7 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 relative overflow-hidden" style={{ background: "linear-gradient(to right, rgba(0,163,255,0.08) 0%, rgba(0,0,0,1) 30%, rgba(0,0,0,1) 70%, rgba(0,163,255,0.08) 100%)" }}>
+      <section className="py-20 relative overflow-hidden" style={{ background: "radial-gradient(ellipse 80% 60% at 50% 50%, rgba(0,163,255,0.07) 0%, transparent 70%)" }}>
         {/* Soft animated glow accents on edges */}
         <motion.div
           className="absolute top-1/2 -translate-y-1/2 -left-20 w-72 h-[120%] rounded-full bg-primary/12 blur-[100px]"

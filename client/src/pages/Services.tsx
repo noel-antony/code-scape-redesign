@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Code, Globe, Server, Smartphone, Cpu, ShieldCheck, ArrowRight } from "lucide-react";
+import { Code, Globe, Server, Smartphone, Cpu, ShieldCheck, ArrowRight, ArrowDown } from "lucide-react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { FocusHoverGroup } from "@/components/FocusHoverGroup";
@@ -80,8 +80,12 @@ export default function Services() {
               </div>
 
               <Link href={`/services/${service.title.toLowerCase().replace(' ', '-')}`}>
-                <Button variant="ghost" className="w-full justify-between group-hover:bg-white/5">
-                  Learn more <span className="group-hover:translate-x-1 transition-transform">→</span>
+                <Button variant="ghost" className="w-full justify-between group-hover:bg-white/5 group-hover:text-primary transition-colors duration-300">
+                  Learn more
+                  <span className="relative w-4 h-4 shrink-0">
+                    <ArrowRight className="absolute inset-0 w-4 h-4 transition-all duration-300 ease-out group-hover:opacity-0 group-hover:rotate-90" />
+                    <ArrowDown className="absolute inset-0 w-4 h-4 text-primary transition-all duration-300 ease-out opacity-0 -rotate-90 group-hover:opacity-100 group-hover:rotate-0" />
+                  </span>
                 </Button>
               </Link>
             </motion.div>
@@ -90,7 +94,7 @@ export default function Services() {
       </div>
 
       {/* Process CTA */}
-      <section className="py-24 md:py-32 mt-16 md:mt-24 relative overflow-hidden" style={{ background: "linear-gradient(to right, rgba(0,163,255,0.08) 0%, rgba(0,0,0,1) 30%, rgba(0,0,0,1) 70%, rgba(0,163,255,0.08) 100%)" }}>
+      <section className="py-24 md:py-32 mt-16 md:mt-24 relative overflow-hidden" style={{ background: "radial-gradient(ellipse 80% 60% at 50% 50%, rgba(0,163,255,0.07) 0%, transparent 70%)" }}>
         {/* Animated glow accents */}
         <motion.div
           className="absolute top-1/2 -translate-y-1/2 -left-20 w-64 h-[120%] rounded-full bg-primary/12 blur-[100px]"

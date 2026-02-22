@@ -22,6 +22,7 @@ export function ParticleCursor() {
 
     let animationFrameId: number;
     const mouse = { x: -9999, y: -9999 };
+    let lastMoveTime = 0;
 
     // --- Config ---
     const CELL = 15;            // base grid spacing (tiny triangles)
@@ -104,6 +105,7 @@ export function ParticleCursor() {
     const handleMouseMove = (e: MouseEvent) => {
       mouse.x = e.clientX;
       mouse.y = e.clientY;
+      lastMoveTime = performance.now();
     };
 
     const handleMouseLeave = () => {
@@ -111,8 +113,14 @@ export function ParticleCursor() {
       mouse.y = -9999;
     };
 
-    const animate = () => {
+    const animate = (time: number = performance.now()) => {
       ctx!.clearRect(0, 0, W, H);
+
+      const timeSinceLastMove = time - lastMoveTime;
+      let globalIntensity = 1;
+      if (timeSinceLastMove > 100) {
+        globalIntensity = Math.max(0, 1 - (timeSinceLastMove - 100) / 300);
+      }
 
       for (let i = 0; i < triangles.length; i++) {
         const tri = triangles[i];
@@ -125,7 +133,7 @@ export function ParticleCursor() {
         // Target opacity: tight radius, sharp falloff
         if (dist < REVEAL_RADIUS) {
           const t = 1 - dist / REVEAL_RADIUS;
-          tri.targetOpacity = t * t * 0.65;
+          tri.targetOpacity = t * t * 0.65 * globalIntensity;
         } else {
           tri.targetOpacity = 0;
         }

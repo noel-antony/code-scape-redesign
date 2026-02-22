@@ -1,8 +1,7 @@
 import { Link } from "wouter";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { insertNewsletterSchema, type InsertNewsletterSubscriber } from "@/hooks/use-contact";
-import { useNewsletter } from "@/hooks/use-contact";
+import { useNewsletter, insertNewsletterSchema, type InsertNewsletterSubscriber } from "@/hooks/use-contact";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Facebook, Twitter, Linkedin, Github, Mail, MapPin } from "lucide-react";
